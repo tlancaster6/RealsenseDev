@@ -12,14 +12,17 @@ if not OUTPUT_DIR.exists():
 
 class Recorder:
 
-    def __init__(self, framerate=30, framesize=(640, 480)):
+    def __init__(self, framerate=30, framesize=(640, 480), outfile_suffix=None):
         self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
         self.output_dir = OUTPUT_DIR
         self.rs_format = rs.format.y8
         self.framerate = framerate
         self.framesize = framesize
         self.config, self.pipeline, self.profile, self.serial = self.enable_device()
-        self.outfile = OUTPUT_DIR / f"{self.serial}.avi"
+        if outfile_suffix is None:
+            self.outfile = OUTPUT_DIR / f"{self.serial}.avi"
+        else:
+            self.outfile = OUTPUT_DIR / f"{self.serial}_{outfile_suffix}.avi"
         self.writer = cv2.VideoWriter(str(self.outfile), self.fourcc, framerate, (framesize[0]*2, framesize[1]), 0)
         self.framecount = 0
 
