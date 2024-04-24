@@ -21,6 +21,7 @@ class HardwareTester:
             recorder.write_frame(frame)
             total_write_time += time.time() - write_start
             n_write_ops += 1
+        recorder.exit()
         results = {
             'target_framerate': framerate,
             'resolution': framesize,
@@ -42,9 +43,11 @@ if __name__ == "__main__":
     tester = HardwareTester()
     for framerate in [6, 15, 30]:
         tester.run_test(framerate=framerate, framesize=(1280, 720), test_length=10)
+        time.sleep(1)
     for framerate in [6, 15, 30, 60, 90]:
         for framesize in [(848, 480), (640, 480), (640, 360), (480, 720), (424, 240)]:
             tester.run_test(framerate=framerate, framesize=framesize)
+            time.sleep(1)
     tester.compile_results()
 
 
