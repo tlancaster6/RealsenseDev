@@ -1,3 +1,5 @@
+import cv2
+
 from recorder import Recorder, OUTPUT_DIR
 import pandas as pd
 from os.path import getsize
@@ -17,11 +19,11 @@ class HardwareTester:
         total_write_time = 0
         end = time.time() + test_length
         while time.time() <= end:
-            frame = recorder.aquire_frame()
             write_start = time.time()
-            recorder.write_frame(frame)
+            recorder.write_frame(recorder.aquire_frame())
             total_write_time += time.time() - write_start
             n_write_ops += 1
+        cv2.imwrite(str(recorder.outfile.with_suffix('.png')), recorder.aquire_frame())
         recorder.exit()
         results = {
             'target_framerate': framerate,
@@ -30,7 +32,8 @@ class HardwareTester:
             'n_write_ops': n_write_ops,
             'avg_write_time': total_write_time / n_write_ops,
             'allowable_write_time': 1 / framerate,
-            'file_size_my': getsize(str(recorder.outfile)) * 10e-6
+            'file_size_mb': getsize(str(recorder.outfile)) * 10e-6,
+            'missing_time': test_length - total_write_time
         }
         self.results.append(results)
 
