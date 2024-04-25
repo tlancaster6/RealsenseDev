@@ -9,7 +9,7 @@ OUTPUT_DIR = pathlib.Path().home() / 'Videos'
 if not OUTPUT_DIR.exists():
     OUTPUT_DIR.mkdir()
 
-# code options: 'H264','X264','XVID','MJPG'
+# code options: 'H264','X264','XVID'
 
 class Recorder:
 

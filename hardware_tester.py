@@ -50,7 +50,7 @@ class HardwareTester:
 
 if __name__ == "__main__":
     tester = HardwareTester()
-    for codec in ['H264', 'X264', 'XVID', 'MJPG']:
+    for codec in ['H264', 'X264', 'XVID']:
         for framerate in [6, 15, 30]:
             tester.run_test(framerate=framerate, framesize=(1280, 720), test_length=60, codec=codec)
             time.sleep(1)
