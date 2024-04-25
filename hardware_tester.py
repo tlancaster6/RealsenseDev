@@ -2,6 +2,7 @@ import cv2
 
 from recorder import Recorder, OUTPUT_DIR
 import pandas as pd
+import numpy as np
 from os.path import getsize
 import time
 
@@ -11,30 +12,33 @@ class HardwareTester:
     def __init__(self):
         self.results = []
 
-    def run_test(self, framerate, framesize, test_length=10):
+    def run_test(self, framerate, framesize, test_length=10, save_video=True, save_png=True):
         print(f'testing with framerate={framerate}, framesize={framesize}')
         outfile_suffix = f'{framesize[0]}x{framesize[1]}_{framerate}fps'
         recorder = Recorder(framerate, framesize, outfile_suffix)
-        n_write_ops = 0
-        total_write_time = 0
+        per_frame_processing_times = []
         end = time.time() + test_length
         while time.time() <= end:
-            write_start = time.time()
+            frame_processing_start = time.time()
             recorder.write_frame(recorder.aquire_frame())
-            total_write_time += time.time() - write_start
-            n_write_ops += 1
-        cv2.imwrite(str(recorder.outfile.with_suffix('.png')), recorder.aquire_frame())
+            per_frame_processing_times.append(time.time() - frame_processing_start)
+        if save_png:
+            cv2.imwrite(str(recorder.outfile.with_suffix('.png')), recorder.aquire_frame())
         recorder.exit()
         results = {
             'target_framerate': framerate,
             'resolution': framesize,
             'test_len_secs': test_length,
-            'n_write_ops': n_write_ops,
-            'avg_write_time': total_write_time / n_write_ops,
-            'allowable_write_time': 1 / framerate,
+            'n_frames_written': len(per_frame_processing_times),
+            'avg_time_per_frame': np.mean(per_frame_processing_times),
+            'max_time_per_frame': np.max(per_frame_processing_times),
+            'median_time_per_frame': np.median(per_frame_processing_times),
+            'stdev_time_per_frame': np.std(per_frame_processing_times),
+            'allowable_time_per_frame': 1 / framerate,
             'file_size_mb': getsize(str(recorder.outfile)) * 10e-6,
-            'missing_time': test_length - total_write_time
         }
+        if not save_video:
+            recorder.outfile.unlink()
         self.results.append(results)
 
     def compile_results(self, save=True):
