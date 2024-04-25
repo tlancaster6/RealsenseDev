@@ -42,15 +42,18 @@ class HardwareTester:
             recorder.outfile.unlink()
         self.results.append(results)
 
-    def compile_results(self, save=True):
+    def compile_results(self, save=True, outfile_suffix=None):
         self.results = pd.DataFrame(self.results)
         if save:
-            self.results.to_csv(str(OUTPUT_DIR / 'testing_results.csv'))
+            filestem = 'testing_results'
+            if outfile_suffix is not None:
+                filestem = f'{filestem}_{outfile_suffix}'
+            self.results.to_csv(str(OUTPUT_DIR / f'{filestem}.csv'))
 
 
 if __name__ == "__main__":
-    tester = HardwareTester()
     for codec in ['H264', 'X264', 'XVID']:
+        tester = HardwareTester()
         print(f'\n\ntesting with {codec} codec')
         for framerate in [6, 15, 30]:
             tester.run_test(framerate=framerate, framesize=(1280, 720), test_length=10, codec=codec)
@@ -59,7 +62,7 @@ if __name__ == "__main__":
             for framesize in [(848, 480), (640, 480), (640, 360), (480, 270), (424, 240)]:
                 tester.run_test(framerate=framerate, framesize=framesize, test_length=10, codec=codec)
                 time.sleep(1)
-    tester.compile_results()
+        tester.compile_results(outfile_suffix=codec)
 
 
 
