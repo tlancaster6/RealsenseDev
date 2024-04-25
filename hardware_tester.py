@@ -14,7 +14,7 @@ class HardwareTester:
 
     def run_test(self, framerate, framesize, test_length=10, codec='H264', save_video=True, save_png=True):
         print(f'testing with framerate={framerate}, framesize={framesize}')
-        outfile_suffix = f'{framesize[0]}x{framesize[1]}_{framerate}fps'
+        outfile_suffix = f'{framesize[0]}x{framesize[1]}_{framerate}fps_{codec}'
         recorder = Recorder(framerate, framesize, outfile_suffix, codec)
         per_frame_processing_times = []
         end = time.time() + test_length
