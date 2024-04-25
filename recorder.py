@@ -43,9 +43,11 @@ class Recorder:
         return config, pipeline, profile, serial
 
     def aquire_frame(self):
-        frames = self.pipeline.wait_for_frames()
-        ir1_frame = frames.get_infrared_frame(1)
-        ir2_frame = frames.get_infrared_frame(2)
+        return self.pipeline.wait_for_frames()
+
+    def process_frame(self, framestack):
+        ir1_frame = framestack.get_infrared_frame(1)
+        ir2_frame = framestack.get_infrared_frame(2)
         image1 = np.asanyarray(ir1_frame.get_data())
         image2 = np.asanyarray(ir2_frame.get_data())
         return np.hstack([image1, image2])
@@ -57,7 +59,7 @@ class Recorder:
     def record(self, length=10):
         end = time.time() + length
         while time.time() <= end:
-            self.write_frame(self.aquire_frame())
+            self.write_frame(self.process_frame(self.aquire_frame()))
 
     def exit(self):
         self.writer.release()

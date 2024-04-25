@@ -19,9 +19,11 @@ class HardwareTester:
         per_frame_processing_times = []
         end = time.time() + test_length
         while time.time() <= end:
+            framestack = recorder.aquire_frame()
             frame_processing_start = time.time()
-            recorder.write_frame(recorder.aquire_frame())
-            per_frame_processing_times.append(time.time() - frame_processing_start)
+            recorder.write_frame(recorder.process_frame(framestack))
+            if recorder.framecount > recorder.framerate:
+                per_frame_processing_times.append(time.time() - frame_processing_start)
         if save_png:
             cv2.imwrite(str(recorder.outfile.with_suffix('.png')), recorder.aquire_frame())
         recorder.exit()
@@ -29,7 +31,7 @@ class HardwareTester:
             'target_framerate': framerate,
             'resolution': framesize,
             'test_len_secs': test_length,
-            'n_frames_written': len(per_frame_processing_times),
+            'n_frames_written': recorder.framecount,
             'avg_time_per_frame': np.mean(per_frame_processing_times),
             'max_time_per_frame': np.max(per_frame_processing_times),
             'median_time_per_frame': np.median(per_frame_processing_times),
