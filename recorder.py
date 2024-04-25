@@ -9,11 +9,13 @@ OUTPUT_DIR = pathlib.Path().home() / 'Videos'
 if not OUTPUT_DIR.exists():
     OUTPUT_DIR.mkdir()
 
+# code options: 'H264','X264','XVID','MJPG'
 
 class Recorder:
 
-    def __init__(self, framerate=30, framesize=(640, 480), outfile_suffix=None):
-        self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    def __init__(self, framerate=30, framesize=(640, 480), outfile_suffix=None, codec='H264'):
+        self.codec_string = codec
+        self.fourcc = cv2.VideoWriter_fourcc(*codec)
         self.output_dir = OUTPUT_DIR
         self.rs_format = rs.format.y8
         self.framerate = framerate
