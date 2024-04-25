@@ -25,7 +25,7 @@ class HardwareTester:
             if recorder.framecount > recorder.framerate:
                 per_frame_processing_times.append(time.time() - frame_processing_start)
         if save_png:
-            cv2.imwrite(str(recorder.outfile.with_suffix('.png')), recorder.aquire_frame())
+            cv2.imwrite(str(recorder.outfile.with_suffix('.png')), recorder.process_frame(recorder.aquire_frame()))
         recorder.exit()
         results = {
             'target_framerate': framerate,
