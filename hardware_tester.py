@@ -53,11 +53,11 @@ if __name__ == "__main__":
     for codec in ['H264', 'X264', 'XVID']:
         print(f'\n\ntesting with {codec} codec')
         for framerate in [6, 15, 30]:
-            tester.run_test(framerate=framerate, framesize=(1280, 720), test_length=60, codec=codec)
+            tester.run_test(framerate=framerate, framesize=(1280, 720), test_length=10, codec=codec)
             time.sleep(1)
         for framerate in [6, 15, 30, 60, 90]:
             for framesize in [(848, 480), (640, 480), (640, 360), (480, 270), (424, 240)]:
-                tester.run_test(framerate=framerate, framesize=framesize, test_length=60, codec=codec)
+                tester.run_test(framerate=framerate, framesize=framesize, test_length=10, codec=codec)
                 time.sleep(1)
     tester.compile_results()
 
