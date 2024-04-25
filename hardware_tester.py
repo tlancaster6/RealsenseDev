@@ -50,11 +50,11 @@ class HardwareTester:
 if __name__ == "__main__":
     tester = HardwareTester()
     for framerate in [6, 15, 30]:
-        tester.run_test(framerate=framerate, framesize=(1280, 720), test_length=10)
+        tester.run_test(framerate=framerate, framesize=(1280, 720), test_length=60, save_video=False, save_png=False)
         time.sleep(1)
     for framerate in [6, 15, 30, 60, 90]:
         for framesize in [(848, 480), (640, 480), (640, 360), (480, 270), (424, 240)]:
-            tester.run_test(framerate=framerate, framesize=framesize)
+            tester.run_test(framerate=framerate, framesize=framesize, test_length=60, save_video=False, save_png=False)
             time.sleep(1)
     tester.compile_results()
 
